@@ -6,13 +6,14 @@ import sqlite3
 import json
 from werkzeug.utils import secure_filename
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+app = Flask(__name__, template_folder='../templates', static_folder='../static', instance_relative_config=False)
 app.config['SECRET_KEY'] = 'blh-company-secret-key-2025'
 
 # Vercel용 데이터베이스 설정 (SQLite는 서버리스에서 제한적)
 # 프로덕션에서는 PostgreSQL이나 MySQL 사용 권장
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tmp/blh_company.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/blh_company.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.instance_path = '/tmp'
 
 # 이미지 업로드 설정 (Vercel에서는 임시 저장소 사용)
 app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
@@ -193,12 +194,30 @@ def not_found_error(error):
 def internal_error(error):
     return render_template('500.html'), 500
 
-# Initialize database
-with app.app_context():
+# Initialize database (Vercel 환경에서 안전하게)
+def init_db():
     try:
-        db.create_all()
+        with app.app_context():
+            db.create_all()
+            return True
     except Exception as e:
         print(f"Database initialization error: {e}")
+        return False
+
+# 데이터베이스 초기화 상태 추적
+_db_initialized = False
+
+def ensure_db_initialized():
+    global _db_initialized
+    if not _db_initialized:
+        _db_initialized = init_db()
+    return _db_initialized
+
+# 모든 데이터베이스 관련 라우트에서 초기화 확인
+@app.before_request
+def before_request():
+    if request.endpoint and any(endpoint in request.endpoint for endpoint in ['home', 'notices', 'notice_detail', 'api_inquiry']):
+        ensure_db_initialized()
 
 # Vercel handler
 def handler(request):
