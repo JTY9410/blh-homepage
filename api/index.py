@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 import os
+from datetime import datetime
 
 # Vercel 환경에서 올바른 경로 설정
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -91,7 +92,7 @@ def notices():
                 'title': '공지사항 예시 1',
                 'content': '내용 예시',
                 'author': '관리자',
-                'created_at': '2025-10-06',
+                'created_at': datetime.utcnow(),
                 'priority': 0,
                 'is_published': True,
                 'view_count': 0,
@@ -102,7 +103,7 @@ def notices():
                 'title': '공지사항 예시 2',
                 'content': '내용 예시',
                 'author': '관리자',
-                'created_at': '2025-10-06',
+                'created_at': datetime.utcnow(),
                 'priority': 1,
                 'is_published': True,
                 'view_count': 0,
@@ -126,7 +127,7 @@ def notice_detail(notice_id: int):
             'title': f'공지사항 예시 {notice_id}',
             'content': '상세 내용 예시',
             'author': '관리자',
-            'created_at': '2025-10-06',
+            'created_at': datetime.utcnow(),
             'priority': 0,
             'is_published': True,
             'view_count': 0,
@@ -140,10 +141,12 @@ def notice_detail(notice_id: int):
             'route': '/notices/<id>'
         }), 500
 
-@app.route('/admin/login')
+@app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     """관리자 로그인 (템플릿 없을 경우에도 안전)"""
     try:
+        if request.method == 'POST':
+            return jsonify({'success': True, 'message': 'Login placeholder success'}), 200
         return render_template('admin/login.html')
     except Exception as e:
         return jsonify({
