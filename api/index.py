@@ -243,13 +243,69 @@ def admin_notices():
     except Exception as e:
         return jsonify({'page': 'admin_notices', 'notices': [], 'error': str(e)})
 
-@app.route('/admin/notices/new')
+@app.route('/admin/notices/new', methods=['GET', 'POST'])
 @login_required
 def admin_notice_new():
     try:
+        if request.method == 'POST':
+            # 서버리스(더미) 환경: 입력만 수락하고 목록으로 이동
+            flash('공지사항이 저장되었습니다. (데모 환경)', 'success')
+            return redirect(url_for('admin_notices'))
         return render_template('admin/notice_form.html', notice=None)
     except Exception as e:
         return jsonify({'page': 'admin_notice_new', 'error': str(e)})
+
+@app.route('/admin/notices/<int:notice_id>/edit', methods=['GET', 'POST'])
+@login_required
+def admin_notice_edit(notice_id: int):
+    try:
+        if request.method == 'POST':
+            flash('공지사항이 수정되었습니다. (데모 환경)', 'success')
+            return redirect(url_for('admin_notices'))
+        # 데모용 더미 데이터
+        dummy_notice = {
+            'id': notice_id,
+            'title': '데모 공지사항',
+            'content': '데모 내용',
+            'priority': 0,
+            'is_published': True,
+            'image_url': None,
+        }
+        return render_template('admin/notice_form.html', notice=dummy_notice)
+    except Exception as e:
+        return jsonify({'page': 'admin_notice_edit', 'error': str(e)})
+
+@app.route('/admin/notices/<int:notice_id>/delete', methods=['POST'])
+@login_required
+def admin_notice_delete(notice_id: int):
+    try:
+        flash('공지사항이 삭제되었습니다. (데모 환경)', 'success')
+        return redirect(url_for('admin_notices'))
+    except Exception as e:
+        return jsonify({'page': 'admin_notice_delete', 'error': str(e)})
+
+@app.route('/admin/inquiries/<int:inq_id>', methods=['GET', 'POST'])
+@login_required
+def admin_inquiry_detail(inq_id: int):
+    try:
+        if request.method == 'POST':
+            # answer/toggles 등을 수락만 하고 목록/상세로 리다이렉트
+            flash('처리가 완료되었습니다. (데모 환경)', 'success')
+            return redirect(url_for('admin_inquiry_detail', inq_id=inq_id))
+        # 데모용 더미 데이터
+        inquiry = {
+            'id': inq_id,
+            'name': '홍길동',
+            'email': 'demo@example.com',
+            'message': '데모 문의 내용',
+            'created_at': '2025-01-01',
+            'is_processed': False,
+            'is_public': True,
+        }
+        answers = []
+        return render_template('admin/inquiry_detail.html', inquiry=inquiry, answers=answers)
+    except Exception as e:
+        return jsonify({'page': 'admin_inquiry_detail', 'error': str(e)})
 
 @app.route('/test')
 def test():
