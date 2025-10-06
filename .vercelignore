@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.flaskenv
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Development
+.git/
+.github/
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Uploads (use cloud storage in production)
+static/uploads/
+uploads/
+
+# Documentation
+*.md
+!README.md
+
+# Deployment scripts
+deploy.sh
+nginx.conf
