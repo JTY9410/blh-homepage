@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}{{ notice.title }} - 공지사항 - BLH Company{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary to-secondary text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">공지사항</h1>
+        <p class="text-xl md:text-2xl text-blue-100">
+            BLH Company의 최신 소식과<br>
+            중요한 공지사항을 확인하세요
+        </p>
+    </div>
+</section>
+
+<!-- Notice Detail -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Back Button -->
+            <div class="mb-8">
+                <a href="{{ url_for('notices') }}" class="inline-flex items-center text-primary hover:text-secondary transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>목록으로 돌아가기
+                </a>
+            </div>
+            
+            <!-- Notice Content -->
+            <article class="bg-white border border-gray-200 rounded-xl p-8 shadow-lg">
+                <!-- Header -->
+                <div class="border-b border-gray-200 pb-6 mb-8">
+                    <div class="flex items-center mb-4">
+                        {% if notice.priority == 1 %}
+                        <span class="bg-danger text-white text-sm font-semibold px-3 py-1 rounded-full mr-4">중요</span>
+                        {% endif %}
+                        <h1 class="text-3xl font-bold text-gray-900">{{ notice.title }}</h1>
+                    </div>
+                    <div class="flex items-center text-gray-600 space-x-6">
+                        <span>
+                            <i class="fas fa-user mr-2"></i>{{ notice.author }}
+                        </span>
+                        <span>
+                            <i class="fas fa-calendar mr-2"></i>{{ notice.created_at.strftime('%Y년 %m월 %d일') }}
+                        </span>
+                        <span>
+                            <i class="fas fa-eye mr-2"></i>{{ notice.view_count }}회 조회
+                        </span>
+                        {% if notice.updated_at != notice.created_at %}
+                        <span>
+                            <i class="fas fa-edit mr-2"></i>{{ notice.updated_at.strftime('%Y년 %m월 %d일') }} 수정
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Image display -->
+                {% if notice.image_url %}
+                <div class="mb-8">
+                    <img src="{{ url_for('static', filename=notice.image_url) }}" 
+                         alt="{{ notice.title }}" 
+                         class="w-full max-w-2xl mx-auto rounded-xl shadow-lg">
+                </div>
+                {% endif %}
+                
+                <!-- Content -->
+                <div class="prose prose-lg max-w-none">
+                    <div class="text-gray-800 leading-relaxed whitespace-pre-line">{{ notice.content }}</div>
+                </div>
+            </article>
+            
+            <!-- Navigation -->
+            <div class="mt-8 flex justify-between">
+                <a href="{{ url_for('notices') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-list mr-2"></i>목록으로
+                </a>
+                <div class="space-x-4">
+                    <button onclick="window.print()" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-print mr-2"></i>인쇄
+                    </button>
+                    <button onclick="shareNotice()" class="bg-success hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-share mr-2"></i>공유
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Notices -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">다른 공지사항</h2>
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Sample related notices -->
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">BLH Company 홈페이지 오픈</h3>
+                    <p class="text-gray-600 text-sm mb-4">BLH Company 공식 홈페이지가 오픈되었습니다...</p>
+                    <div class="flex items-center text-xs text-gray-500">
+                        <span class="mr-4">관리자</span>
+                        <span>2025-01-01</span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">EV 진단 솔루션 출시 예정</h3>
+                    <p class="text-gray-600 text-sm mb-4">전기차 배터리 상태를 실시간으로 측정하는...</p>
+                    <div class="flex items-center text-xs text-gray-500">
+                        <span class="mr-4">관리자</span>
+                        <span>2025-01-01</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">더 궁금한 점이 있으신가요?</h2>
+        <p class="text-xl mb-8 text-blue-100">
+            BLH Company에 대해 더 자세히 알아보세요
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('contact') }}" class="bg-accent hover:bg-blue-500 text-white px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-envelope mr-2"></i>문의하기
+            </a>
+            <a href="{{ url_for('services') }}" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-cogs mr-2"></i>서비스 보기
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function shareNotice() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ notice.title }}',
+            text: 'BLH Company 공지사항',
+            url: window.location.href
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            alert('링크가 클립보드에 복사되었습니다.');
+        });
+    }
+}
+</script>
+{% endblock %}

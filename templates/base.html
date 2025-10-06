@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BLH Company - 중고차 거래의 디지털 혁신{% endblock %}</title>
+    <meta name="description" content="{% block description %}AI 기반 모빌리티 솔루션으로 투명하고 효율적인 중고차 거래{% endblock %}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'Noto Sans KR', 'sans-serif'],
+                        'korean': ['Noto Sans KR', 'sans-serif']
+                    },
+                    colors: {
+                        'primary': '#2563eb',
+                        'secondary': '#1e40af',
+                        'accent': '#3b82f6',
+                        'success': '#10b981',
+                        'warning': '#f59e0b',
+                        'danger': '#ef4444'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BLH Company" class="w-10 h-10 object-contain">
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">BLH Company</h1>
+                        <p class="text-sm text-gray-600">중고차 거래의 디지털 혁신</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{{ url_for('home') }}" class="text-gray-700 hover:text-primary transition-colors">홈</a>
+                    <a href="{{ url_for('about') }}" class="text-gray-700 hover:text-primary transition-colors">회사소개</a>
+                    <a href="{{ url_for('services') }}" class="text-gray-700 hover:text-primary transition-colors">서비스</a>
+                    <a href="{{ url_for('contact') }}" class="text-gray-700 hover:text-primary transition-colors">문의하기</a>
+                    <a href="{{ url_for('notices') }}" class="text-gray-700 hover:text-primary transition-colors">공지사항</a>
+                    <a href="{{ url_for('admin_login') }}" class="text-gray-700 hover:text-primary transition-colors">관리자</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-700 hover:text-primary" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden mt-4 pb-4 border-t border-gray-200 hidden">
+                <div class="flex flex-col space-y-4 pt-4">
+                    <a href="{{ url_for('home') }}" class="text-gray-700 hover:text-primary transition-colors">홈</a>
+                    <a href="{{ url_for('about') }}" class="text-gray-700 hover:text-primary transition-colors">회사소개</a>
+                    <a href="{{ url_for('services') }}" class="text-gray-700 hover:text-primary transition-colors">서비스</a>
+                    <a href="{{ url_for('contact') }}" class="text-gray-700 hover:text-primary transition-colors">문의하기</a>
+                    <a href="{{ url_for('notices') }}" class="text-gray-700 hover:text-primary transition-colors">공지사항</a>
+                    <a href="{{ url_for('admin_login') }}" class="text-gray-700 hover:text-primary transition-colors">관리자</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto px-4 py-4">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} bg-{{ 'green' if category == 'success' else 'red' if category == 'error' else 'blue' }}-100 border border-{{ 'green' if category == 'success' else 'red' if category == 'error' else 'blue' }}-400 text-{{ 'green' if category == 'success' else 'red' if category == 'error' else 'blue' }}-700 px-4 py-3 rounded mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BLH Company" class="w-8 h-8 object-contain">
+                        <h3 class="text-lg font-bold">BLH Company</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">
+                        AI 기반 모빌리티 솔루션으로<br>
+                        투명하고 효율적인 중고차 거래
+                    </p>
+                </div>
+                
+                <!-- Services -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">서비스</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="{{ url_for('services') }}" class="hover:text-white transition-colors">온라인 경매</a></li>
+                        <li><a href="{{ url_for('services') }}" class="hover:text-white transition-colors">EV 진단</a></li>
+                        <li><a href="{{ url_for('services') }}" class="hover:text-white transition-colors">가격 산정</a></li>
+                        <li><a href="{{ url_for('services') }}" class="hover:text-white transition-colors">탁송 관재</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Company -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">회사</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="{{ url_for('about') }}" class="hover:text-white transition-colors">회사소개</a></li>
+                        <li><a href="{{ url_for('notices') }}" class="hover:text-white transition-colors">공지사항</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="hover:text-white transition-colors">문의하기</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">연락처</h4>
+                    <div class="space-y-2 text-sm text-gray-400">
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>부산시 해운대 우동 1436 카이저빌 613호</p>
+                        <p><i class="fas fa-phone mr-2"></i>051-711-4929</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@blhcompany.com</p>
+                        <p><i class="fas fa-clock mr-2"></i>평일 09:00-18:00</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2025 BLH Company. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

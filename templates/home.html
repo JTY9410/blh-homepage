@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}홈페이지 - BLH Company{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary to-secondary text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+            BLH Company
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-blue-100">
+            AI와 모빌리티 기술을 융합하여<br>
+            중고차 산업의 디지털 전환을 선도하는 혁신 기업
+        </p>
+    </div>
+</section>
+
+<!-- Company Overview -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">BLHCOMPANY 개요</h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">핵심 메시지</h3>
+                    <p class="text-gray-700 leading-relaxed mb-6">
+                        BLH는 Black Hole의 의미를 가지고 있으며, IT와 AI 를 통해 자동차 산업의 모든 가치를 흡수하여 
+                        새로운 혁신을 창출하는 기업으로 성장하기 위해 노력하고 있습니다. 중고차 경매 공매, 전기차 진단솔루션, 
+                        탁송물류시스템 개발, 자동차가격산정등 중고차에 AI와 IT를 접목하여 중고차 산업의 디지털화를 선도하는 
+                        기업으로 성장할 계획입니다.
+                    </p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">사업 배경</h3>
+                    <ul class="text-gray-700 space-y-2">
+                        <li>• 지역시장과 결합한 경매 및 공매사이트 운영</li>
+                        <li>• EV 시장 성장과 전기차 진단 기술 부족</li>
+                        <li>• 중고차 가격의 불확실성과 투명성 부족</li>
+                        <li>• 가격 투명성 확보 필요성</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">기술 경쟁력</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-success mr-3 mt-1"></i>
+                            <span class="text-gray-700">다년간 진단기술을 연구한 경험</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-success mr-3 mt-1"></i>
+                            <span class="text-gray-700">전기차에 특화된 진단기술</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-success mr-3 mt-1"></i>
+                            <span class="text-gray-700">AI 융합 기술</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-success mr-3 mt-1"></i>
+                            <span class="text-gray-700">중고차 전반에 대한 통합 솔루션 개발</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Notices Section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">최신 공지사항</h2>
+        {% if latest_notices %}
+        <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
+            {% for notice in latest_notices %}
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <!-- Instagram-style header -->
+                <div class="p-4 border-b border-gray-100">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-building text-white text-sm"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold text-gray-900">{{ notice.author }}</h4>
+                            <p class="text-sm text-gray-500">{{ notice.created_at.strftime('%Y-%m-%d') }}</p>
+                        </div>
+                        {% if notice.priority == 1 %}
+                        <div class="ml-auto">
+                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">중요</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Image area (Instagram-style) -->
+                {% if notice.image_url %}
+                <div class="aspect-square overflow-hidden">
+                    <img src="{{ url_for('static', filename=notice.image_url) }}" 
+                         alt="{{ notice.title }}" 
+                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                </div>
+                {% endif %}
+                
+                <!-- Content area -->
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-900 mb-2 line-clamp-2">{{ notice.title }}</h3>
+                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">{{ notice.content[:100] }}{% if notice.content|length > 100 %}...{% endif %}</p>
+                </div>
+                
+                <!-- Instagram-style footer -->
+                <div class="px-4 pb-4">
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <div class="flex items-center space-x-4">
+                            <span><i class="far fa-eye mr-1"></i>{{ notice.view_count }}</span>
+                            <span><i class="far fa-clock mr-1"></i>{{ notice.created_at.strftime('%m/%d') }}</span>
+                        </div>
+                        <a href="{{ url_for('notice_detail', notice_id=notice.id) }}" 
+                           class="text-primary hover:text-secondary font-medium">자세히 보기</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-8">
+            <a href="{{ url_for('notices') }}" 
+               class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center">
+                <i class="fas fa-list mr-2"></i>모든 공지사항 보기
+            </a>
+        </div>
+        {% else %}
+        <div class="text-center text-gray-500">
+            <i class="fas fa-inbox text-4xl mb-4"></i>
+            <p>등록된 공지사항이 없습니다.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Business Strategy Timeline -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">사업 추진 전략</h2>
+        <div class="max-w-4xl mx-auto">
+            <div class="space-y-8">
+                <!-- 2025 -->
+                <div class="flex items-center">
+                    <div class="w-24 h-24 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        2025
+                    </div>
+                    <div class="ml-8 flex-1">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">온라인 경매 사이트 개발 및 운영</h3>
+                        <p class="text-gray-600">부산지역을 기반으로 한 C2B 온라인 경매 플랫폼 구축</p>
+                    </div>
+                </div>
+                
+                <!-- 2026 -->
+                <div class="flex items-center">
+                    <div class="w-24 h-24 bg-success rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        2026
+                    </div>
+                    <div class="ml-8 flex-1">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">공매사이트 운영, EV 진단 솔루션 개발</h3>
+                        <p class="text-gray-600">가격산정시스템 완성, 중고차 관련 전반적인 시스템 개발</p>
+                    </div>
+                </div>
+                
+                <!-- 2028 -->
+                <div class="flex items-center">
+                    <div class="w-24 h-24 bg-warning rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        2028
+                    </div>
+                    <div class="ml-8 flex-1">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">EV 사전예방 솔루션 개발</h3>
+                        <p class="text-gray-600">전국 확대 및 글로벌 진출</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Revenue Projection -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">예상 매출</h2>
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-8">
+                    <div class="text-4xl font-bold text-primary mb-2">40억원</div>
+                    <div class="text-gray-600 font-semibold">2026년</div>
+                </div>
+                <div class="text-center bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-8">
+                    <div class="text-4xl font-bold text-success mb-2">107억원</div>
+                    <div class="text-gray-600 font-semibold">2027년</div>
+                </div>
+                <div class="text-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-8">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">155억원</div>
+                    <div class="text-gray-600 font-semibold">2028년</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Interactive Core Services -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">핵심 서비스</h2>
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 items-start">
+            <!-- Left: Services list -->
+            <div class="space-y-4">
+                <button data-service="auction" class="w-full text-left bg-white rounded-xl p-6 shadow hover:shadow-lg transition service-btn">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">중고차 온라인 경매&공매</h3>
+                    <p class="text-gray-700 text-sm">C2B 온라인 중고차 경매 플랫폼 개발과 운영 중고차 공매를 운영하여 투명하고 효율적인 중고차 거래의 터전을 만들고 있습니다.</p>
+                </button>
+                <button data-service="ev" class="w-full text-left bg-white rounded-xl p-6 shadow hover:shadow-lg transition service-btn">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">전기차 진단솔루션 및 헬스체크</h3>
+                    <p class="text-gray-700 text-sm">BLE 기반 OBD-II 진단기로 전기차 배터리 상태를 실시간으로 측정하고 분석하며 빅데이터 기반의 전기차의 건강을 체크하여 사고를 사전에 예방 플랫폼을 제공합니다.</p>
+                </button>
+                <button data-service="price" class="w-full text-left bg-white rounded-xl p-6 shadow hover:shadow-lg transition service-btn">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">자동차가격산정</h3>
+                    <p class="text-gray-700 text-sm">중고차에 AI와 IT를 접목하여 중고차 산업의 디지털화를 선도하는 기업으로 성장할 계획입니다.</p>
+                </button>
+                <button data-service="logistics" class="w-full text-left bg-white rounded-xl p-6 shadow hover:shadow-lg transition service-btn">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">탁송물류관재시스템</h3>
+                    <p class="text-gray-700 text-sm">GPS 기반 실시간 위치 추적과 통합 ERP 시스템으로 효율적인 탁송 관리를 제공합니다.</p>
+                </button>
+            </div>
+
+            <!-- Right: Preview image -->
+            <div class="bg-white rounded-xl p-4 shadow">
+                <img id="service-preview" src="{{ url_for('static', filename='images/auction.png') }}" alt="서비스 미리보기" class="w-full h-[420px] object-cover rounded-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const preview = document.getElementById('service-preview');
+  const buttons = document.querySelectorAll('.service-btn');
+  const map = {
+    auction: "{{ url_for('static', filename='images/auction.png') }}",
+    ev: "{{ url_for('static', filename='images/el.png') }}",
+    price: "{{ url_for('static', filename='images/p.png') }}",
+    logistics: "{{ url_for('static', filename='images/driv.png') }}"
+  };
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-service');
+      if (map[key]) {
+        preview.src = map[key];
+      }
+      buttons.forEach(b => b.classList.remove('ring-2','ring-primary'));
+      btn.classList.add('ring-2','ring-primary');
+    });
+  });
+});
+</script>
+{% endblock %}
+
+<!-- CTA Section -->
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">더 자세한 정보가 필요하신가요?</h2>
+        <p class="text-xl mb-8 text-blue-100">
+            BLH Company의 서비스와 기술에 대해 자세히 알아보세요
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('services') }}" class="bg-accent hover:bg-blue-500 text-white px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-cogs mr-2"></i>서비스 보기
+            </a>
+            <a href="{{ url_for('contact') }}" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-envelope mr-2"></i>문의하기
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

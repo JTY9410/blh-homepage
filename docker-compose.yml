@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  blh-homepage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blh-homepage-container
+    ports:
+      - "3001:5000"
+    networks:
+      - blh-network
+    restart: always
+    volumes:
+      - ./instance:/app/instance
+    environment:
+      - FLASK_ENV=production
+
+networks:
+  blh-network:
+    driver: bridge

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}공지사항 - BLH Company{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary to-secondary text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">공지사항</h1>
+        <p class="text-xl md:text-2xl text-blue-100">
+            BLH Company의 최신 소식과<br>
+            중요한 공지사항을 확인하세요
+        </p>
+    </div>
+</section>
+
+<!-- Instagram-style Notices Grid -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            {% if notices %}
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for notice in notices %}
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <!-- Instagram-style header -->
+                        <div class="p-4 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                                    <i class="fas fa-building text-white"></i>
+                                </div>
+                                <div class="ml-3 flex-1">
+                                    <h4 class="font-semibold text-gray-900">{{ notice.author }}</h4>
+                                    <p class="text-sm text-gray-500">{{ notice.created_at.strftime('%Y년 %m월 %d일') }}</p>
+                                </div>
+                                {% if notice.priority == 1 %}
+                                <div class="ml-auto">
+                                    <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full animate-pulse">
+                                        <i class="fas fa-exclamation-circle mr-1"></i>중요
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Image area (Instagram-style) -->
+                        {% if notice.image_url %}
+                        <div class="aspect-square overflow-hidden">
+                            <img src="{{ url_for('static', filename=notice.image_url) }}" 
+                                 alt="{{ notice.title }}" 
+                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Content area -->
+                        <div class="p-4">
+                            <h3 class="font-bold text-gray-900 mb-3 text-lg leading-tight">{{ notice.title }}</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">{{ notice.content[:120] }}{% if notice.content|length > 120 %}...{% endif %}</p>
+                        </div>
+                        
+                        <!-- Instagram-style footer -->
+                        <div class="px-4 pb-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <div class="flex items-center space-x-4 text-gray-500">
+                                    <span class="flex items-center">
+                                        <i class="far fa-eye mr-1"></i>{{ notice.view_count }}
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="far fa-clock mr-1"></i>{{ notice.created_at.strftime('%m/%d') }}
+                                    </span>
+                                </div>
+                                <a href="{{ url_for('notice_detail', notice_id=notice.id) }}" 
+                                   class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-full text-xs font-medium transition-colors">
+                                    자세히 보기
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Instagram-style like/interaction area -->
+                        <div class="px-4 pb-4 border-t border-gray-50 pt-3">
+                            <div class="flex items-center space-x-4">
+                                <button class="flex items-center text-gray-500 hover:text-red-500 transition-colors">
+                                    <i class="far fa-heart mr-1"></i>
+                                    <span class="text-xs">좋아요</span>
+                                </button>
+                                <button class="flex items-center text-gray-500 hover:text-blue-500 transition-colors">
+                                    <i class="far fa-comment mr-1"></i>
+                                    <span class="text-xs">댓글</span>
+                                </button>
+                                <button class="flex items-center text-gray-500 hover:text-green-500 transition-colors">
+                                    <i class="far fa-share-square mr-1"></i>
+                                    <span class="text-xs">공유</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Load more button -->
+                <div class="text-center mt-12">
+                    <button class="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-plus mr-2"></i>더 많은 공지사항 보기
+                    </button>
+                </div>
+            {% else %}
+                <div class="text-center py-16">
+                    <div class="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-bell text-gray-400 text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">아직 공지사항이 없어요</h3>
+                    <p class="text-gray-600 mb-8">새로운 소식이 있으면 가장 먼저 알려드릴게요!</p>
+                    <a href="{{ url_for('home') }}" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-full font-semibold transition-colors">
+                        <i class="fas fa-home mr-2"></i>홈으로 돌아가기
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">더 많은 정보가 필요하신가요?</h2>
+        <p class="text-xl text-gray-600 mb-8">
+            BLH Company의 서비스와 회사에 대해 자세히 알아보세요
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('services') }}" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-cogs mr-2"></i>서비스 보기
+            </a>
+            <a href="{{ url_for('about') }}" class="bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-info-circle mr-2"></i>회사소개
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

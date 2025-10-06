@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}서비스 - BLH Company{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary to-secondary text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">핵심 서비스</h1>
+        <p class="text-xl md:text-2xl text-blue-100">
+            AI 기반 모빌리티 솔루션으로<br>
+            중고차 거래의 모든 과정을 혁신합니다
+        </p>
+    </div>
+</section>
+
+<!-- Online Auction Service -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-gavel text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">온라인 경매 및 공매 운영</h2>
+                    <p class="text-lg text-gray-700 mb-6">
+                        부산지역을 기반으로 소비자와 딜러를 연결하는 C2B 온라인 경매 플랫폼과 공공기관 및 법인 차량 대상 공매 시스템을 운영합니다.
+                    </p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">주요 기능</h3>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-success mr-3 mt-1"></i>
+                            <span>자동차 진단에 특화된 기술 도입</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-success mr-3 mt-1"></i>
+                            <span>위치 기반 자동차 탁송 시스템</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-success mr-3 mt-1"></i>
+                            <span>AI 기반 중고차 도매시세 제공</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-success mr-3 mt-1"></i>
+                            <span>투명하고 안정적인 거래 환경</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <img src="{{ url_for('static', filename='images/car.png') }}" alt="온라인 경매 및 공매 운영" class="w-full rounded-xl shadow object-cover">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EV Diagnosis Service -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="order-1 lg:order-1">
+                    <div class="w-16 h-16 bg-success rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-battery-three-quarters text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">EV 진단 활성화 및 사전 고장 진단 플랫폼</h2>
+                    <p class="text-lg text-gray-700 mb-6">
+                        BLE 기반 OBD-II 진단기를 활용하여 전기차 배터리 상태를 실시간으로 측정하고, AI로 분석하여 고장 패턴을 사전에 예측합니다.
+                    </p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">수익 모델</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>• 진단기 판매/대여</li>
+                        <li>• 구독 기반 진단 리포트</li>
+                        <li>• 정비사/딜러용 프리미엄 플랜</li>
+                    </ul>
+                </div>
+                <div class="order-2 lg:order-2">
+                    <img src="{{ url_for('static', filename='images/el.png') }}" alt="EV 진단 솔루션" class="w-full rounded-xl shadow object-cover">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Price Estimation Service -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-calculator text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">빅데이터 기반 가격 산정 시스템</h2>
+                    <p class="text-lg text-gray-700 mb-6">
+                        국토부, 조합, 보험사, 플랫폼 데이터와 자체 EV 진단 데이터를 통합하여 정확한 차량 가격을 산정합니다.
+                    </p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">수익 모델</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>• API 사용료</li>
+                        <li>• 기업용 데이터 리포트</li>
+                        <li>• 맞춤형 분석 컨설팅</li>
+                    </ul>
+                </div>
+                <div>
+                    <img src="{{ url_for('static', filename='images/p.png') }}" alt="가격 산정 시스템" class="w-full rounded-xl shadow object-cover">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Logistics Management Service -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="order-1 lg:order-1">
+                    <div class="w-16 h-16 bg-warning rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-truck text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">탁송 관재시스템 및 ERP</h2>
+                    <p class="text-lg text-gray-700 mb-6">
+                        탁송 과정의 모든 행위를 전산화하고, GPS 기반 실시간 위치 추적과 통합 회계 처리를 제공합니다.
+                    </p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">수익 모델</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>• ERP 사용료(월 구독)</li>
+                        <li>• 탁송 수수료</li>
+                        <li>• 기업 커스터마이징</li>
+                    </ul>
+                </div>
+                <div class="order-2 lg:order-2">
+                    <img src="{{ url_for('static', filename='images/driv.png') }}" alt="탁송 관재 시스템" class="w-full rounded-xl shadow object-cover">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">서비스에 관심이 있으신가요?</h2>
+        <p class="text-xl mb-8 text-blue-100">
+            BLH Company의 혁신적인 서비스를 경험해보세요
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('contact') }}" class="bg-accent hover:bg-blue-500 text-white px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-phone mr-2"></i>문의하기
+            </a>
+            <a href="{{ url_for('about') }}" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-info-circle mr-2"></i>회사소개
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

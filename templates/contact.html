@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}문의하기 - BLH Company{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary to-secondary text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">문의하기</h1>
+        <p class="text-xl md:text-2xl text-blue-100">
+            BLH Company에 대해 궁금한 점이 있으시면<br>
+            언제든지 문의해주세요
+        </p>
+    </div>
+</section>
+
+<!-- Contact Form & Info -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">문의 양식</h2>
+                    <form id="contact-form" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">이름 *</label>
+                                <input type="text" id="name" name="name" required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">이메일 *</label>
+                                <input type="email" id="email" name="email" required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">연락처</label>
+                                <input type="tel" id="phone" name="phone"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="company" class="block text-sm font-semibold text-gray-700 mb-2">회사명</label>
+                                <input type="text" id="company" name="company"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="service_interest" class="block text-sm font-semibold text-gray-700 mb-2">관심 서비스</label>
+                            <select id="service_interest" name="service_interest"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option value="">선택해주세요</option>
+                                <option value="online_auction">온라인 경매 플랫폼</option>
+                                <option value="ev_diagnosis">EV 진단 솔루션</option>
+                                <option value="price_estimation">가격 산정 시스템</option>
+                                <option value="logistics_management">탁송 관재 시스템</option>
+                                <option value="partnership">파트너십</option>
+                                <option value="other">기타</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="is_public" class="block text-sm font-semibold text-gray-700 mb-2">공개 여부</label>
+                            <select id="is_public" name="is_public"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option value="true">공개</option>
+                                <option value="false">비공개</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">문의 내용 *</label>
+                            <textarea id="message" name="message" rows="6" required
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                      placeholder="문의하실 내용을 자세히 적어주세요."></textarea>
+                        </div>
+                        
+                        <button type="submit" 
+                                class="w-full bg-primary hover:bg-secondary text-white font-semibold py-4 px-6 rounded-lg transition-colors">
+                            <i class="fas fa-paper-plane mr-2"></i>문의 전송
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">연락처 정보</h2>
+                    <div class="space-y-8">
+                        <!-- Address -->
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-map-marker-alt text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">주소</h3>
+                                <p class="text-gray-600">부산시 해운대 우동 1436 카이저빌 613호</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-success rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-phone text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">전화번호</h3>
+                                <p class="text-gray-600">051-711-4929</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Fax -->
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-warning rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-fax text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">팩스</h3>
+                                <p class="text-gray-600">031-715-4929</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-envelope text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">이메일</h3>
+                                <p class="text-gray-600">info@blhcompany.com</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Business Hours -->
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">운영시간</h3>
+                                <div class="text-gray-600 space-y-1">
+                                    <p>평일: 09:00-18:00</p>
+                                    <p>토요일: 09:00-13:00</p>
+                                    <p>일요일: 휴무</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Q&A Board (Public Inquiries) -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">문의 게시판</h2>
+        <div class="max-w-4xl mx-auto space-y-6">
+            {% if inquiries %}
+                {% for q in inquiries %}
+                <div class="bg-white rounded-xl p-6 shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ q.name }}님의 문의</h3>
+                            <p class="text-sm text-gray-500">{{ q.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-full {{ 'bg-green-100 text-green-700' if q.is_processed else 'bg-gray-100 text-gray-700' }}">
+                            {{ '답변완료' if q.is_processed else '접수' }}
+                        </span>
+                    </div>
+                    <p class="mt-4 text-gray-700 whitespace-pre-line">{{ q.message }}</p>
+                    {% if answers_by_inquiry.get(q.id) %}
+                    <div class="mt-6 border-t pt-4">
+                        <h4 class="text-sm font-semibold text-gray-900 mb-2">답변</h4>
+                        <div class="space-y-3">
+                            {% for a in answers_by_inquiry.get(q.id) %}
+                            <div class="bg-gray-50 rounded p-3">
+                                <p class="text-sm text-gray-700 whitespace-pre-line">{{ a.content }}</p>
+                                <p class="text-xs text-gray-500 mt-1">{{ a.admin_name }} · {{ a.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center text-gray-600">등록된 공개 문의가 없습니다.</div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">자주 묻는 질문</h2>
+        <div class="max-w-4xl mx-auto">
+            <div class="space-y-6">
+                <!-- FAQ 1 -->
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">온라인 경매 플랫폼 이용 방법은 어떻게 되나요?</h3>
+                    <p class="text-gray-600">
+                        회원가입 후 차량 정보를 등록하면 AI 기반 진단을 통해 정확한 가격을 산정받을 수 있습니다. 
+                        경매는 실시간으로 진행되며, 투명한 거래 과정을 확인할 수 있습니다.
+                    </p>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">EV 진단 솔루션의 특징은 무엇인가요?</h3>
+                    <p class="text-gray-600">
+                        BLE 기반 OBD-II 진단기를 통해 전기차 배터리 상태를 실시간으로 측정하고, 
+                        AI 알고리즘으로 고장 패턴을 사전에 예측하여 예방 정비를 도와드립니다.
+                    </p>
+                </div>
+                
+                <!-- FAQ 3 -->
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">가격 산정 시스템의 정확도는 어느 정도인가요?</h3>
+                    <p class="text-gray-600">
+                        빅데이터와 AI를 활용한 가격 산정 시스템으로 예측 오차율 ±2.5% 이내의 높은 정확도를 보장합니다. 
+                        국토부, 조합, 보험사, 플랫폼 데이터와 자체 EV 진단 데이터를 통합하여 산정합니다.
+                    </p>
+                </div>
+                
+                <!-- FAQ 4 -->
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">탁송 관재 시스템의 주요 기능은 무엇인가요?</h3>
+                    <p class="text-gray-600">
+                        GPS 기반 실시간 위치 추적, 사진 촬영 및 문서 징수 자동화, 
+                        비용 청구 및 탁송 기사 관리, 통합 회계 처리 시스템을 제공합니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">더 궁금한 점이 있으신가요?</h2>
+        <p class="text-xl mb-8 text-blue-100">
+            BLH Company의 서비스에 대해 더 자세히 알아보세요
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('services') }}" class="bg-accent hover:bg-blue-500 text-white px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-cogs mr-2"></i>서비스 보기
+            </a>
+            <a href="{{ url_for('about') }}" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-info-circle mr-2"></i>회사소개
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/api/inquiry', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert('문의가 성공적으로 전송되었습니다.');
+            this.reset();
+        } else {
+            alert('문의 전송 중 오류가 발생했습니다: ' + result.error);
+        }
+    } catch (error) {
+        alert('문의 전송 중 오류가 발생했습니다.');
+        console.error('Error:', error);
+    }
+});
+</script>
+{% endblock %}
