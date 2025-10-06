@@ -81,6 +81,65 @@ def contact():
             'route': '/contact'
         }), 500
 
+@app.route('/notices')
+def notices():
+    """공지사항 목록 (DB 없이 더미 데이터)"""
+    try:
+        dummy_notices = [
+            {
+                'id': 1,
+                'title': '공지사항 예시 1',
+                'content': '내용 예시',
+                'author': '관리자',
+                'created_at': '2025-10-06',
+                'priority': 0,
+                'is_published': True,
+                'view_count': 0,
+                'image_url': None,
+            },
+            {
+                'id': 2,
+                'title': '공지사항 예시 2',
+                'content': '내용 예시',
+                'author': '관리자',
+                'created_at': '2025-10-06',
+                'priority': 1,
+                'is_published': True,
+                'view_count': 0,
+                'image_url': None,
+            },
+        ]
+        return render_template('notices.html', notices=dummy_notices)
+    except Exception as e:
+        return jsonify({
+            'error': 'Template error',
+            'message': str(e),
+            'route': '/notices'
+        }), 500
+
+@app.route('/notices/<int:notice_id>')
+def notice_detail(notice_id: int):
+    """공지사항 상세 (DB 없이 더미 데이터)"""
+    try:
+        dummy_notice = {
+            'id': notice_id,
+            'title': f'공지사항 예시 {notice_id}',
+            'content': '상세 내용 예시',
+            'author': '관리자',
+            'created_at': '2025-10-06',
+            'priority': 0,
+            'is_published': True,
+            'view_count': 0,
+            'image_url': None,
+        }
+        return render_template('notice_detail.html', notice=dummy_notice)
+    except Exception as e:
+        return jsonify({
+            'error': 'Template error',
+            'message': str(e),
+            'route': '/notices/<id>'
+        }), 500
+
 @app.route('/test')
 def test():
     """테스트 라우트"""
