@@ -219,9 +219,5 @@ def before_request():
     if request.endpoint and any(endpoint in request.endpoint for endpoint in ['home', 'notices', 'notice_detail', 'api_inquiry']):
         ensure_db_initialized()
 
-# Vercel handler
-def handler(request):
-    return app(request.environ, request.start_response)
-
 if __name__ == '__main__':
     app.run(debug=False)
