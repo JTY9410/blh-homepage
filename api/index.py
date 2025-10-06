@@ -199,7 +199,7 @@ def admin_login():
             'error': str(e)
         })
 
-@app.route('/admin/logout', methods=['POST', 'GET'])
+@app.route('/admin/logout', methods=['GET', 'POST'])
 @login_required
 def admin_logout():
     session.pop('is_admin_authenticated', None)
@@ -217,8 +217,8 @@ def admin_root():
 def admin_dashboard():
     try:
         stats = {
-            'total_notices': 2,
-            'published_notices': 2,
+            'total_notices': 0,
+            'published_notices': 0,
             'total_inquiries': 0,
             'unprocessed_inquiries': 0,
         }
@@ -226,55 +226,30 @@ def admin_dashboard():
     except Exception:
         return jsonify({ 'page': 'admin_dashboard', 'status': 'ok' })
 
-# 추가: 관리자 문의 목록 (더미)
+# Missing admin pages (render placeholders safely if templates missing)
 @app.route('/admin/inquiries')
 @login_required
 def admin_inquiries():
     try:
-        dummy_inquiries = []
-        return render_template('admin/inquiries.html', inquiries=dummy_inquiries)
+        return render_template('admin/inquiries.html', inquiries=[])
     except Exception as e:
         return jsonify({'page': 'admin_inquiries', 'inquiries': [], 'error': str(e)})
 
-# 추가: 공지사항 작성 폼 (더미)
-@app.route('/admin/notices/new')
-@login_required
-def admin_notice_new():
-    try:
-        return render_template('admin/notice_form.html', mode='create', notice=None)
-    except Exception as e:
-        return jsonify({'page': 'admin_notice_new', 'error': str(e)})
-
-# 추가: 공지사항 관리 목록 (더미)
 @app.route('/admin/notices')
 @login_required
 def admin_notices():
     try:
-        dummy_notices = [
-            {
-                'id': 1,
-                'title': '공지사항 예시 1',
-                'author': '관리자',
-                'created_at': datetime.utcnow(),
-                'is_published': True,
-                'priority': 0,
-                'view_count': 0,
-                'image_url': None,
-            },
-            {
-                'id': 2,
-                'title': '공지사항 예시 2',
-                'author': '관리자',
-                'created_at': datetime.utcnow(),
-                'is_published': True,
-                'priority': 1,
-                'view_count': 5,
-                'image_url': None,
-            },
-        ]
-        return render_template('admin/notices.html', notices=dummy_notices)
+        return render_template('admin/notices.html', notices=[])
     except Exception as e:
-        return jsonify({'page': 'admin_notices', 'error': str(e)})
+        return jsonify({'page': 'admin_notices', 'notices': [], 'error': str(e)})
+
+@app.route('/admin/notices/new')
+@login_required
+def admin_notice_new():
+    try:
+        return render_template('admin/notice_form.html', notice=None)
+    except Exception as e:
+        return jsonify({'page': 'admin_notice_new', 'error': str(e)})
 
 @app.route('/test')
 def test():
