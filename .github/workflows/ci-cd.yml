@@ -1,0 +1,186 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  DOCKER_IMAGE: wecarmobility/blh-homepage
+  DOCKER_REGISTRY: docker.io
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run basic tests
+      run: |
+        python -c "import app; print('App imports successfully')"
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Generate tags
+      id: meta
+      run: |
+        TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+        SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+        echo "timestamp=${TIMESTAMP}" >> $GITHUB_OUTPUT
+        echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+        echo "tags=${DOCKER_IMAGE}:latest,${DOCKER_IMAGE}:${TIMESTAMP},${DOCKER_IMAGE}:${SHORT_SHA}" >> $GITHUB_OUTPUT
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Update deployment info
+      run: |
+        echo "🚀 Docker image pushed successfully!" >> $GITHUB_STEP_SUMMARY
+        echo "📦 Tags: ${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+        echo "🔗 Docker Hub: https://hub.docker.com/r/${{ env.DOCKER_IMAGE }}" >> $GITHUB_STEP_SUMMARY
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create deployment script
+      run: |
+        cat > deploy-latest.sh << 'EOF'
+        #!/bin/bash
+        
+        # BLH Homepage 자동 배포 스크립트
+        set -e
+        
+        echo "🚀 BLH Homepage 배포 시작..."
+        
+        # 기존 컨테이너 중지 및 제거
+        if docker ps -q --filter "name=blh-homepage-container" | grep -q .; then
+            echo "⏹️  기존 컨테이너 중지 중..."
+            docker stop blh-homepage-container
+            docker rm blh-homepage-container
+        fi
+        
+        # 최신 이미지 다운로드
+        echo "📥 최신 Docker 이미지 다운로드 중..."
+        docker pull ${{ env.DOCKER_IMAGE }}:latest
+        
+        # 새 컨테이너 실행
+        echo "🔄 새 컨테이너 실행 중..."
+        docker run -d \
+          --name blh-homepage-container \
+          -p 3001:3001 \
+          --restart unless-stopped \
+          --health-cmd="curl -f http://localhost:3001/health || exit 1" \
+          --health-interval=30s \
+          --health-timeout=10s \
+          --health-retries=3 \
+          ${{ env.DOCKER_IMAGE }}:latest
+        
+        # 헬스체크 대기
+        echo "⏳ 서비스 시작 대기 중..."
+        sleep 10
+        
+        # 배포 확인
+        if curl -f http://localhost:3001/health > /dev/null 2>&1; then
+            echo "✅ 배포 성공! 서비스가 정상적으로 실행 중입니다."
+            echo "🌐 접속 URL: http://localhost:3001"
+        else
+            echo "❌ 배포 실패! 헬스체크에 실패했습니다."
+            docker logs blh-homepage-container
+            exit 1
+        fi
+        
+        # 사용하지 않는 이미지 정리
+        echo "🧹 사용하지 않는 Docker 이미지 정리 중..."
+        docker image prune -f
+        
+        echo "🎉 배포 완료!"
+        EOF
+        
+        chmod +x deploy-latest.sh
+
+    - name: Upload deployment artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: deployment-scripts
+        path: |
+          deploy-latest.sh
+          docker-compose.yml
+          Dockerfile
+
+    - name: Create release info
+      run: |
+        echo "## 🚀 자동 배포 완료" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📋 배포 정보" >> $GITHUB_STEP_SUMMARY
+        echo "- **커밋**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **브랜치**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **시간**: \`$(date -u)\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🐳 Docker 이미지" >> $GITHUB_STEP_SUMMARY
+        echo "- **레지스트리**: \`${{ env.DOCKER_IMAGE }}:latest\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **링크**: [Docker Hub](https://hub.docker.com/r/${{ env.DOCKER_IMAGE }})" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📦 배포 스크립트" >> $GITHUB_STEP_SUMMARY
+        echo "다운로드한 \`deploy-latest.sh\` 스크립트를 실행하여 최신 버전을 배포할 수 있습니다:" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+        echo "./deploy-latest.sh" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  notify:
+    needs: [build-and-push, deploy]
+    runs-on: ubuntu-latest
+    if: always() && (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
+    
+    steps:
+    - name: Notify deployment status
+      run: |
+        if [[ "${{ needs.build-and-push.result }}" == "success" && "${{ needs.deploy.result }}" == "success" ]]; then
+          echo "✅ 배포 성공: 모든 단계가 완료되었습니다."
+        else
+          echo "❌ 배포 실패: 일부 단계에서 오류가 발생했습니다."
+          echo "- Build & Push: ${{ needs.build-and-push.result }}"
+          echo "- Deploy: ${{ needs.deploy.result }}"
+        fi
