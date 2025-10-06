@@ -1,7 +1,7 @@
 {
   "functions": {
-    "api/index.py": {
-      "runtime": "python3.11"
+    "api/*.py": {
+      "runtime": "@vercel/python@4.1.0"
     }
   },
   "rewrites": [
@@ -9,8 +9,5 @@
       "source": "/(.*)",
       "destination": "/api/index"
     }
-  ],
-  "env": {
-    "FLASK_ENV": "production"
-  }
+  ]
 }
