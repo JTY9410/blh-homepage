@@ -1,4 +1,9 @@
 {
+  "env": {
+    "SECRET_KEY": "blhcompany-secret-2025",
+    "ADMIN_USERNAME": "blhcompany",
+    "ADMIN_PASSWORD": "blhcompany1004"
+  },
   "rewrites": [
     {
       "source": "/(.*)",
