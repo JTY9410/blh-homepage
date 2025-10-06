@@ -1,6 +1,5 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash
 import os
-from datetime import datetime
 
 # Vercel 환경에서 올바른 경로 설정
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -12,6 +11,25 @@ static_dir = os.path.join(parent_dir, 'static')
 app = Flask(__name__, 
            template_folder=template_dir, 
            static_folder=static_dir)
+
+# 세션 및 관리자 인증 설정 (환경변수 우선)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'blh-company-secret-key-2025')
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'blh_admin_2025!')
+
+# 로그인 보호 데코레이터
+from functools import wraps
+
+def login_required(view_func):
+    @wraps(view_func)
+    def wrapper(*args, **kwargs):
+        if not session.get('is_admin_authenticated'):
+            # JSON 요청은 401 반환, 그 외는 로그인 페이지로 이동
+            if request.is_json or request.headers.get('Accept') == 'application/json':
+                return jsonify({ 'success': False, 'message': 'Authentication required' }), 401
+            return redirect(url_for('admin_login'))
+        return view_func(*args, **kwargs)
+    return wrapper
 
 @app.route('/')
 def landing():
@@ -82,6 +100,9 @@ def contact():
             'route': '/contact'
         }), 500
 
+# 공지 라우트 (더미 데이터)
+from datetime import datetime
+
 @app.route('/notices')
 def notices():
     """공지사항 목록 (DB 없이 더미 데이터)"""
@@ -141,19 +162,64 @@ def notice_detail(notice_id: int):
             'route': '/notices/<id>'
         }), 500
 
+# 관리자 인증 라우트
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    """관리자 로그인 (템플릿 없을 경우에도 안전)"""
+    """관리자 로그인"""
     try:
         if request.method == 'POST':
-            return jsonify({'success': True, 'message': 'Login placeholder success'}), 200
+            # JSON 또는 Form 모두 지원
+            if request.is_json:
+                payload = request.get_json(silent=True) or {}
+                username = payload.get('username', '')
+                password = payload.get('password', '')
+            else:
+                username = request.form.get('username', '')
+                password = request.form.get('password', '')
+
+            if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+                session['is_admin_authenticated'] = True
+                # JSON 요청은 JSON으로, 그 외는 대시보드로 리다이렉트
+                if request.is_json:
+                    return jsonify({'success': True, 'message': 'Login success'}), 200
+                flash('로그인되었습니다.', 'success')
+                return redirect(url_for('admin_dashboard'))
+            else:
+                if request.is_json:
+                    return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
+                flash('아이디 또는 비밀번호가 올바르지 않습니다.', 'error')
+                # 템플릿 없을 수도 있으므로 아래로 진행
+        # GET 요청이거나 실패 시 템플릿 렌더링 시도
         return render_template('admin/login.html')
     except Exception as e:
+        # 템플릿이 없거나 오류 발생시 JSON 플레이스홀더
         return jsonify({
             'page': 'admin_login',
-            'message': 'Placeholder admin login (template not found)',
+            'message': 'Admin login placeholder',
             'error': str(e)
         })
+
+@app.route('/admin/logout', methods=['POST'])
+@login_required
+def admin_logout():
+    session.pop('is_admin_authenticated', None)
+    if request.is_json:
+        return jsonify({'success': True, 'message': 'Logged out'}), 200
+    return redirect(url_for('admin_login'))
+
+@app.route('/admin')
+@login_required
+def admin_root():
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/dashboard')
+@login_required
+def admin_dashboard():
+    try:
+        return render_template('admin/dashboard.html')
+    except Exception:
+        # 템플릿이 없으면 JSON으로 대체
+        return jsonify({ 'page': 'admin_dashboard', 'status': 'ok' })
 
 @app.route('/test')
 def test():
