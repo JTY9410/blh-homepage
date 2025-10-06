@@ -140,6 +140,18 @@ def notice_detail(notice_id: int):
             'route': '/notices/<id>'
         }), 500
 
+@app.route('/admin/login')
+def admin_login():
+    """관리자 로그인 (템플릿 없을 경우에도 안전)"""
+    try:
+        return render_template('admin/login.html')
+    except Exception as e:
+        return jsonify({
+            'page': 'admin_login',
+            'message': 'Placeholder admin login (template not found)',
+            'error': str(e)
+        })
+
 @app.route('/test')
 def test():
     """테스트 라우트"""
