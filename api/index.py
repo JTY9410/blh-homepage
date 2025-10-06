@@ -2,11 +2,21 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
+import sys
 import sqlite3
 import json
 from werkzeug.utils import secure_filename
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static', instance_relative_config=False)
+# Vercel 환경에서 올바른 경로 설정
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+template_dir = os.path.join(parent_dir, 'templates')
+static_dir = os.path.join(parent_dir, 'static')
+
+app = Flask(__name__, 
+           template_folder=template_dir, 
+           static_folder=static_dir, 
+           instance_relative_config=False)
 app.config['SECRET_KEY'] = 'blh-company-secret-key-2025'
 
 # Vercel용 데이터베이스 설정 (SQLite는 서버리스에서 제한적)
@@ -194,30 +204,14 @@ def not_found_error(error):
 def internal_error(error):
     return render_template('500.html'), 500
 
-# Initialize database (Vercel 환경에서 안전하게)
-def init_db():
-    try:
-        with app.app_context():
-            db.create_all()
-            return True
-    except Exception as e:
-        print(f"Database initialization error: {e}")
-        return False
-
-# 데이터베이스 초기화 상태 추적
-_db_initialized = False
-
-def ensure_db_initialized():
-    global _db_initialized
-    if not _db_initialized:
-        _db_initialized = init_db()
-    return _db_initialized
-
-# 모든 데이터베이스 관련 라우트에서 초기화 확인
-@app.before_request
-def before_request():
-    if request.endpoint and any(endpoint in request.endpoint for endpoint in ['home', 'notices', 'notice_detail', 'api_inquiry']):
-        ensure_db_initialized()
+# Vercel 환경에서 데이터베이스 초기화
+try:
+    with app.app_context():
+        db.create_all()
+        print("Database initialized successfully")
+except Exception as e:
+    print(f"Database initialization error: {e}")
+    # 서버리스 환경에서는 데이터베이스 오류가 있어도 계속 진행
 
 if __name__ == '__main__':
     app.run(debug=False)
